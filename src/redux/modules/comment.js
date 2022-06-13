@@ -25,23 +25,27 @@ export function deleteComment(comment_index) {
   return { type: DELETE, comment_index };
 }
 
-export const loadComment = () => {};
+export const loadComment2 = () => {};
 
-export const addComment = () => {};
+export const addComment2 = () => {};
 
-export const updateComment = () => {};
+export const updateComment2 = () => {};
 
-export const deleteComment = () => {};
+export const deleteComment2 = () => {};
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case "comment/LOAD": {
+      break;
     }
     case "comment/ADD": {
+      break;
     }
     case "comment/UPDATE": {
+      break;
     }
     case "comment/DELETE": {
+      break;
     }
     default:
       return state;
