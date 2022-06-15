@@ -1,42 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 //비밀번호 로그인 처리, 기본적으로 우리가 만든 auth도 가져와야 함, getAuth를 firebase.js에서 auth로 내보내고 있음
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-// 서버 username = userID w
+// 서버 username = userID
 let data = {};
 
-const Login2 = () => {
+const Login = () => {
   const navigate = useNavigate();
-  // const id_ref = React.useRef(null);
-  // const pw_ref = React.useRef(null);
-  const [userId, setId] = React.useState("");
-  const [password, setPassword] = React.useState("");
+
+  const [userId, setId] = useState("아이디");
+  const [password, setPassword] = useState("패스워드");
   const dispatch = useDispatch();
 
-  // console.log(
-  //   `username: ${id_ref.current.value}, password: ${pw_ref.current.value}`
-  // );
+  console.log(userId, password);
 
   const handleLogin = () => {
+    // e.preventDefault();
     if (userId === "" || password === "") {
       window.alert("아이디와 비밀번호 모두 입력해주세요.😊");
       return;
     }
+
+    const frm = new FormData();
+    frm.append("username", userId);
+    frm.append("password", password);
+
     let userDoc = {
       username: userId,
       password: password,
     };
-    axios.post("", userDoc).then((res) => {
-      console.log(res);
-      console.log(res.headers.authorization);
-      localStorage.setItem("token", res.headers.authorization);
-    });
-    console.log(userId, password);
-    // dispatch();
+
+    axios
+      .post("http://3.39.234.211/user/login", userDoc, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        console.log(res.headers.authorization);
+        localStorage.setItem("token", res.headers.authorization);
+      })
+      .catch((err) => console.log(err));
   };
+
   // const loginDB = () => {
   //   let userDoc = {
   //     username: id_ref.current.value,
@@ -50,9 +60,9 @@ const Login2 = () => {
   // };
   // const TOKEN = localStorage.getItem("access_token");
 
-  React.useEffect(() => {
-    // loginDB();
-  }, []);
+  // React.useEffect(() => {
+  //   handleLogin();
+  // }, []);
 
   return (
     <Container>
@@ -77,6 +87,7 @@ const Login2 = () => {
             type="password"
             required
             minLength="8"
+            // ref={pw_ref}
           />
         </InputBox>
 
@@ -143,4 +154,4 @@ const Btn = styled.button`
     background-color: #93cdd2;
   }
 `;
-export default Login2;
+export default Login;

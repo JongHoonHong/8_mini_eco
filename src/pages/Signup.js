@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
-
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import axios from "axios";
+import { registerUser } from "../redux/modules/user";
 
 const Signup = () => {
   //인풋-> 아이디(고유값), 이름,이메일, 패스워드, 패스워드(중복체크용)
@@ -11,59 +12,80 @@ const Signup = () => {
   // const email_ref = React.useRef(null);
   // const pw_ref = React.useRef(null);
   // const pw_check_ref = React.useRef(null);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [userId, setId] = React.useState("");
-  const [realName, setRealname] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [passwordCHK, setPasswordCHK] = React.useState("");
+  const [userId, setId] = useState(null);
+  const [realName, setRealname] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [passwordCHK, setPasswordCHK] = useState(null);
 
-  if (
-    password === "" ||
-    passwordCHK === "" ||
-    realName === "" ||
-    email === "" ||
-    realName === ""
-  ) {
-    window.alert("입력 칸에 정보를 전부 기입해주세요!");
-    return;
-  }
-  const signupDB = () => {
-    let userDoc = {
+  console.log(typeof userId, typeof password);
+  //추가 + 실시간 유효성 검사(정규표현식)
+  // React.useEffect(() => {
+  //   handleSubmit();
+  // }, []);
+
+  let data = { username: userId };
+  const checkUniqueId = () => {
+    axios
+      .post("http://3.39.234.211/user/signup/check", JSON.stringify(data), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => console.log(typeof response))
+      .catch((err) => console.log(err));
+  };
+  const handleSubmit = () => {
+    // e.preventDefault();
+
+    if (
+      password === "" ||
+      passwordCHK === "" ||
+      realName === "" ||
+      email === "" ||
+      realName === ""
+    ) {
+      window.alert("입력 칸에 정보를 전부 기입해주세요!");
+      return;
+    }
+
+    if (password !== passwordCHK) {
+      return window.alert("입력한 비밀번호가 다릅니다!");
+    }
+
+    let body = {
       username: userId,
       password: password,
       email: email,
       realName: realName,
     };
-    axios.post("", userDoc).then((res) => {
-      console.log(res);
-      console.log(res.headers.authorization);
-      localStorage.setItem("token", res.headers.authorization);
-    });
+    //http://3.39.234.211/user/signup
+    axios
+      .post("http://3.39.234.211/user/signup", body)
+      .then((res) => {
+        console.log(res);
+        window.alert("가입이 완료됐습니다. 로그인 해주세요😎");
+      })
+      .catch((err) => {
+        console.log(err);
+        window.alert("가입이 실패하였습니다.");
+      });
 
-    // const signupDB = () => {
-    //   let userDoc = {
-    //     username: userId,
-    //     password: password,
-    //     email: email,
-    //     realName: realName,
-    //   };
-    //   axios.post("", userDoc).then((res) => {
-    //     console.log(res);
-    //     console.log(res.headers.authorization);
-    //     localStorage.setItem("token", res.headers.authorization);
-    //   });
-
-    //optional chaning-> ?. 삼항 연산자처럼 만약에 앞의 값이 유효하지 않으면 error를 반환하는 것이 아니라
-    //undefined 값으로 넣어준다.
-    // const user_doc = await addDoc(collection(db, "users"), {
-    //   user_id: user.user.email,
-    //   name: name_ref.current?.value,
-    //   // image_url: file_link_ref.current?.url,
-    // });
-    // console.log(user_doc);
+    // dispatch(
+    //   registerUser(body).then((res) => {
+    //     if (res.payload.success) {
+    //       navigate("/login");
+    //     } else {
+    //       window.alert("회원가입에 실패했습니다.");
+    //     }
+    //   })
+    // );
   };
+
   return (
     <Container>
       <Contents>
@@ -77,7 +99,7 @@ const Signup = () => {
               required
               placeholder="예시 - gamza112"
             />
-            <button>중복확인</button>
+            <button onClick={checkUniqueId}>중복확인</button>
           </Flexcont>
         </InputBox>
         <InputBox>
@@ -121,17 +143,8 @@ const Signup = () => {
             required
           />
         </InputBox>
-        <Btn
-          onClick={() => {
-            //   signupFB();
-            window.alert("가입이 완료되었습니다.");
-            navigate("/");
-          }}
-        >
-          회원가입
-        </Btn>
+        <Btn onClick={handleSubmit}>회원가입</Btn>
       </Contents>
-      {/* 이미지 : <input type="file" onChange={uploadFB} /> <br /> */}
     </Container>
   );
 };
