@@ -1,5 +1,5 @@
 const getToken = () => {
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   if (token) {
     return token;
@@ -12,11 +12,11 @@ const setToken = (token) => {
   if (!token) {
     return false;
   }
-  sessionStorage.setItem("token", token);
+  localStorage.setItem("token", token);
 };
 
 const delToken = () => {
-  sessionStorage.removeItem("token");
+  localStorage.removeItem("token");
 };
 
 export { getToken, setToken, delToken };
