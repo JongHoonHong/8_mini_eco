@@ -10,6 +10,9 @@ const UPDATE = "post/UPDATE";
 const DELETE = "post/DELETE";
 const LOADONE = "post/LOADONE";
 const LOADCATEGORY = "post/LOADCATEGORY";
+const ADDCOMMENT = "post/ADDCOMMENT";
+const DELETECOMMENT = "post/DELETECOMMENT";
+const UPDATECOMMENT = "post/UPDATECOMMENT";
 
 export function loadPost(post_list) {
   return { type: LOAD, post_list };
@@ -33,6 +36,18 @@ export function loadOne(post_list) {
 
 export function loadCategory(post_list) {
   return { type: LOADCATEGORY, post_list };
+}
+
+export function addComment(post_id, post) {
+  return { type: ADDCOMMENT, post_id, post };
+}
+
+export function deleteComment(post_id, comment_id) {
+  return { type: DELETECOMMENT, post_id, comment_id };
+}
+
+export function updateComment(post_id, comment_id, post) {
+  return { type: UPDATECOMMENT, post_id, comment_id, post };
 }
 
 export const loadPostDB = () => {
@@ -138,6 +153,36 @@ export const loadCategoryDB = (category) => {
   };
 };
 
+export const addCommentDB = (post_id, post) => {
+  return function (dispatch) {
+    axios
+      .get(`http://3.39.234.211/${post_id}/comment`, post)
+      .then((response) => {
+        dispatch(addComment(post));
+      });
+  };
+};
+
+export const deleteCommentDB = (post_id, comment_id) => {
+  return function (dispatch) {
+    axios
+      .delete(`http://3.39.234.211/${post_id}/${comment_id}`)
+      .then((response) => {
+        dispatch(deleteComment(post_id, comment_id));
+      });
+  };
+};
+
+export const updateCommentDB = (post_id, comment_id, post) => {
+  return function (dispatch) {
+    axios
+      .put(`http://3.39.234.211/${post_id}/${comment_id}`, post)
+      .then((response) => {
+        dispatch(updateComment(post_id, comment_id));
+      });
+  };
+};
+
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case "post/LOAD": {
@@ -166,6 +211,15 @@ export default function reducer(state = initialState, action = {}) {
     case "post/LOADCATEGORY": {
       return { list: action.post_list };
     }
+
+    case "post/ADDCOMMENT": {
+      const new_post_list = [...state.list, action.post];
+      return { list: new_post_list };
+    }
+    // case "post/DELETECOMMENT": {
+
+    // }
+    // case "post/UPDATECOMMENT":
     default:
       return state;
   }
