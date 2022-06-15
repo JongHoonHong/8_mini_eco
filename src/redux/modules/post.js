@@ -92,6 +92,9 @@ export const addPostDB = (post) => {
       .then((response) => {
         // console.log(post);
         dispatch(addPost(post));
+      })
+      .catch((error) => {
+        console.log("게시물 추가 에러");
       });
   };
 };
@@ -102,6 +105,9 @@ export const deletePostDB = (post_id, category) => {
       .delete(`http://3.39.234.211/${category}/${post_id}`, {})
       .then((response) => {
         dispatch(deletePost(post_id));
+      })
+      .catch((error) => {
+        console.log("게시물 삭제 에러");
       });
   };
 };
@@ -130,6 +136,9 @@ export const updatePostDB = (post_id, newData) => {
       })
       .then((response) => {
         dispatch(updatePost(post_id, newData));
+      })
+      .catch((error) => {
+        console.log("게시물 업데이트 에러");
       });
   };
 };
@@ -140,6 +149,9 @@ export const loadOneDB = (post_id, category) => {
       .get(`http://3.39.234.211/${category}/${post_id}`, {})
       .then((response) => {
         dispatch(loadOne(response.data));
+      })
+      .catch((error) => {
+        console.log("상세페이지 로드 에러");
       });
   };
 };
@@ -147,9 +159,14 @@ export const loadOneDB = (post_id, category) => {
 export const loadCategoryDB = (category) => {
   console.log(category);
   return function (dispatch) {
-    axios.get(`http://3.39.234.211/posts/${category}`, {}).then((response) => {
-      dispatch(loadCategory(response.data));
-    });
+    axios
+      .get(`http://3.39.234.211/posts/${category}`, {})
+      .then((response) => {
+        dispatch(loadCategory(response.data));
+      })
+      .catch((error) => {
+        console.log("카테고리별 게시물 리스트 로드 에러");
+      });
   };
 };
 
@@ -169,6 +186,9 @@ export const deleteCommentDB = (post_id, comment_id) => {
       .delete(`http://3.39.234.211/${post_id}/${comment_id}`)
       .then((response) => {
         dispatch(deleteComment(post_id, comment_id));
+      })
+      .catch((error) => {
+        console.log("댓글 삭제 에러");
       });
   };
 };
@@ -179,6 +199,9 @@ export const updateCommentDB = (post_id, comment_id, post) => {
       .put(`http://3.39.234.211/${post_id}/${comment_id}`, post)
       .then((response) => {
         dispatch(updateComment(post_id, comment_id));
+      })
+      .catch((error) => {
+        console.log("댓글 수정 에러");
       });
   };
 };
