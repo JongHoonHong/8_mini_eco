@@ -1,37 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { deletePostDB, updatePostDB } from "../redux/modules/post";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-function Post({ title, text, image, id }) {
-  const dispatch = useDispatch();
-
+function Post({ title, text, image, id, category, username }) {
   //  해당 게시물 정보 가져오기 위한 id 저장
+  //  detail page로 props 넘기기
+
   const data = {
     id: id,
+    category: category,
   };
 
-  const deletePosting = () => {
-    dispatch(deletePostDB(id));
-  };
-
-  console.log(image);
   return (
-    <PostContainer>
-      <PostTitle>{title}</PostTitle>
-      <PostContents>{text}</PostContents>
-      <PostImage>
-        <img src={image} width="100%" />
-      </PostImage>
+    <Link to="/postdetail" state={{ data: data }}>
+      <PostContainer>
+        <PostTitle>{title}</PostTitle>
+        <PostContents>{text}</PostContents>
+        <p>{username}</p>
+        <PostImage>
+          <img src={image} width="100%" alt="" />
+        </PostImage>
 
-      <Link to="/postdetail" state={{ data: data }}>
-        <EditBtn>수정하기 버튼</EditBtn>
-      </Link>
-
-      <DeleteBtn onClick={deletePosting}>삭제하기 버튼</DeleteBtn>
-      <p>{id}</p>
-    </PostContainer>
+        <p>{id}</p>
+      </PostContainer>
+    </Link>
   );
 }
 
@@ -46,7 +39,3 @@ const PostTitle = styled.div``;
 const PostContents = styled.div``;
 
 const PostImage = styled.div``;
-
-const EditBtn = styled.button``;
-
-const DeleteBtn = styled.button``;

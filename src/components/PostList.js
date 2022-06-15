@@ -1,59 +1,67 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 
 import { useState } from "react";
 import Post from "./Post";
 import { Link, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { loadPostDB } from "../redux/modules/post";
+import { loadPostDB, loadCategoryDB } from "../redux/modules/post";
 
 function PostList() {
-  //   const [codeText, setCodeText] = useState("Test");
-  //   const [codeLanguage, setCodeLanguage] = useState("javascript");
-  //   const [showLineNum, setShowLineNum] = useState(1);
-  //   const [startingLineNum, setStartingLineNum] = useState(1);
-  //   const inputCode = React.useRef(null);
-
-  //   const handleChange = (e) => {
-  //     setCodeText(e.target.value);
-  //   };
-
-  //   return (
-  //     <PostListContainer>
-  //       <InputCodeText type="text" onChange={handleChange} />
-  //       <CodeBox
-  //         code={codeText}
-  //         language={codeLanguage}
-  //         showLineNumbers={showLineNum}
-  //         startingLineNumber={startingLineNum}
-  //         wrapLines
-  //       />
-  //     </PostListContainer>
-  //   );
-  // }
-
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.post.list);
-  console.log(posts.data);
+  console.log(posts);
+  const [language, setLanguage] = useState("");
 
   React.useEffect(() => {
     dispatch(loadPostDB());
   }, []);
 
+  React.useEffect(() => {
+    dispatch(loadCategoryDB(language));
+  }, [language]);
+
   return (
-    <PostListContainer>
-      {posts.map((list, index) => {
-        return (
-          <Post
-            key={index}
-            title={list.title}
-            image={list.fileUrl}
-            text={list.contents}
-            id={list.id}
-          />
-        );
-      })}
-    </PostListContainer>
+    <>
+      <LanguageList>
+        <button
+          onClick={() => {
+            setLanguage("Spring");
+          }}
+        >
+          Spring
+        </button>
+        <button
+          onClick={() => {
+            setLanguage("React");
+          }}
+        >
+          React
+        </button>
+        <button
+          onClick={() => {
+            setLanguage("Node.js");
+          }}
+        >
+          Node.js
+        </button>
+      </LanguageList>
+      <PostListContainer>
+        {posts.map((list, index) => {
+          return (
+            <Post
+              key={index}
+              title={list.title}
+              image={list.fileUrl}
+              text={list.contents}
+              category={list.category}
+              id={list.id}
+              username={list.username}
+            />
+          );
+        })}
+      </PostListContainer>
+    </>
   );
 }
 export default PostList;
@@ -65,6 +73,4 @@ const PostListContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-// const InputCodeText = styled.input`
-//   height: 200px;
-// `;
+const LanguageList = styled.div``;

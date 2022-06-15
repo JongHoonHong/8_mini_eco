@@ -25,27 +25,51 @@ export function deleteComment(comment_index) {
   return { type: DELETE, comment_index };
 }
 
-export const loadComment2 = () => {};
+export const loadCommentDB = () => {
+  return function (dispatch) {
+    axios.get("http://3.39.234.211").then((response) => {
+      console.log(response.data);
+      dispatch(loadComment(response.data.data));
+    });
+  };
+};
 
-export const addComment2 = () => {};
+export const addCommentDB = (comment) => {
+  return function (dispatch) {
+    axios.post("http://3.39.234.211").then((response) => {
+      console.log(comment);
+      dispatch(addComment(comment));
+    });
+  };
+};
 
-export const updateComment2 = () => {};
+export const deleteCommentDB = (comment_id) => {
+  return function (dispatch) {
+    axios.delete(`http://3.39.234.211/${comment_id}`, {}).then((response) => {
+      dispatch(deleteComment(comment_id));
+    });
+  };
+};
 
-export const deleteComment2 = () => {};
+export const updateCommentDB = () => {};
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case "comment/LOAD": {
-      break;
+      return { list: action.comment_list };
     }
     case "comment/ADD": {
-      break;
+      const new_comment_list = [...state.list, action.comment];
+      return { list: new_comment_list };
     }
     case "comment/UPDATE": {
       break;
     }
     case "comment/DELETE": {
-      break;
+      const new_comment_list = state.list.filter((l, idx) => {
+        return parseInt(action.comment_index) !== idx;
+      });
+      return { list: new_comment_list };
     }
     default:
       return state;
