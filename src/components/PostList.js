@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
-
 import { useState } from "react";
 import Post from "./Post";
 import { Link, Navigate } from "react-router-dom";
@@ -15,12 +14,9 @@ function PostList() {
   const [language, setLanguage] = useState("");
 
   React.useEffect(() => {
-    dispatch(loadPostDB());
-  }, []);
-
-  // React.useEffect(() => {
-  //   dispatch(loadCategoryDB(language));
-  // }, [language]);
+    if (language === "") dispatch(loadPostDB());
+    else dispatch(loadCategoryDB(language));
+  }, [language]);
 
   console.log(posts);
   return (
@@ -35,6 +31,7 @@ function PostList() {
         </button>
         <button
           onClick={() => {
+            console.log("react");
             setLanguage("React");
           }}
         >
@@ -83,6 +80,7 @@ const PostListContainer = styled.div`
 `;
 
 const LanguageList = styled.div`
+  margin-top: 100px;
   padding: 10px;
   display: flex;
   justify-content: space-between;

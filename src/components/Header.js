@@ -28,6 +28,7 @@ function Header() {
   const logoutHandler = () => {
     delUserId();
     delToken();
+    navigate("/");
   };
   //로그인 기능
   const logInHandler = () => {

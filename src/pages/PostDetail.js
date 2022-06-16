@@ -79,10 +79,9 @@ function PostDetail() {
 
   console.log(post);
 
-  // React.useEffect(() => {
-  //   if (user_id === data.username) setIsYou(true);
-  // }, []);
-  // console.log(isYou);
+  // if (user_id === data.username) setIsYou(true);
+
+  console.log(isYou);
 
   const updatePosting = () => {
     // let file = newImage.current.files[0];
@@ -125,9 +124,8 @@ function PostDetail() {
         </PostDetailImage>
         <div>{imageSrc && <img src={imageSrc} />}</div>
         {isYou === true ? (
-          <button onClick={deletePosting}>버튼삭제</button>
+          (<button onClick={deletePosting}>버튼삭제</button>)()
         ) : (
-          // (<button onClick={updatePosting}>수정가능</button>))
           <p>본인아님</p>
         )}
 

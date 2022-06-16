@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { deleteCommentDB, updateCommentDB } from "../redux/modules/post";
 import { useDispatch } from "react-redux";
+import Comment from "./Comment";
 
 function CommentBox({ datas }) {
   const dispatch = useDispatch();

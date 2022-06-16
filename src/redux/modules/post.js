@@ -178,11 +178,13 @@ export const loadOneDB = (post_id, category) => {
 };
 
 export const loadCategoryDB = (category) => {
+  console.log(category);
   return function (dispatch) {
     axios
       .get(`http://3.35.176.127/posts/${category}`, {})
       .then((response) => {
-        dispatch(loadCategory(response.data));
+        console.log(response);
+        dispatch(loadCategory(response.data.result));
       })
       .catch((error) => {
         console.log("카테고리별 게시물 리스트 로드 에러");
