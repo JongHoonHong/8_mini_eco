@@ -9,6 +9,7 @@ function CommentUpload({ postid }) {
 
   const addComments = () => {
     dispatch(addCommentDB(postid, commentText.current.value));
+    window.location.reload();
   };
 
   return (
@@ -22,3 +23,9 @@ function CommentUpload({ postid }) {
 export default CommentUpload;
 
 const CommentUploadContainer = styled.div``;
+
+const Div = styled.div`
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
+`;

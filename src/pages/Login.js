@@ -8,12 +8,10 @@ import axios from "axios";
 import { setToken, setUserId } from "../shared/local_storage";
 import { checkId_Reg, checkPW_Reg } from "../shared/reg";
 
-
 // 서버 username = userID
 let data = {};
 const Login = () => {
   const navigate = useNavigate();
-
 
   const [userId, setId] = useState("");
   const [password, setPassword] = useState("");
@@ -24,25 +22,22 @@ const Login = () => {
   const dispatch = useDispatch();
   console.log(userId, password);
 
-
   const handleLogin = async () => {
-
     if (userId === "" || password === "") {
       window.alert("아이디와 비밀번호 모두 입력해주세요.😊");
       return;
     }
 
-    if (!checkId_Reg(userId)) {
+    if (checkId_Reg(userId) === false) {
       return window.alert("아이디는 영어 숫자 조합입니다. 😊");
     }
-    if (!checkPW_Reg(password)) {
+    if (password < 6) {
       return window.alert("비밀번호는 6자리 이상입니다.😊");
     }
 
     // const frm = new FormData();
     // frm.append("username", userId);
     // frm.append("password", password);
-
 
     let userDoc = {
       username: userId,
@@ -68,7 +63,6 @@ const Login = () => {
         pw_ref.current.value = "";
       });
   };
-
 
   return (
     <Container>

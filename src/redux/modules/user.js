@@ -7,11 +7,6 @@ import { getToken, setToken, delToken } from "../../shared/token";
 
 // 유저Actions
 const LOG_IN = "LOG_IN";
-//로그인 하면 여기서
-//const initialState = {
-//   user: null,
-//   is_login: false,
-//  };
 
 //초기값 세팅 하고 여기에 아이디랑 토큰값 is_login을 true로 설정
 const LOG_OUT = "LOG_OUT";

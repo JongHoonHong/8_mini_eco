@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 
 function PostUpdate() {
   return <PostUpdateContainer></PostUpdateContainer>;
@@ -6,4 +7,4 @@ function PostUpdate() {
 
 export default PostUpdate;
 
-const PostUpdateContainer = stlyed.div``;
+const PostUpdateContainer = styled.div``;

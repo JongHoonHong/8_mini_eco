@@ -22,4 +22,6 @@ function Home() {
 
 export default Home;
 
-const HomeContainer = styled.div``;
+const HomeContainer = styled.div`
+  width: 1440px;
+`;
