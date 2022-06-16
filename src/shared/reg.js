@@ -20,7 +20,7 @@ const checkEmail_Reg = (email) => {
 
 //비밀번호 형식 판단 영어 문자 조합 최소6자리 이상
 const checkPW_Reg = (pw) => {
-  const regExp = /"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$"/g;
+  const regExp = /[a-zA-Z0-9]{6,}/g;
   if (regExp.test(pw)) {
     return true;
   } else {

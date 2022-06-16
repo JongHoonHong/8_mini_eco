@@ -36,12 +36,8 @@ function Header() {
   };
   return (
     <HeaderContainer className="header">
-      <HeaderTitle
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        E-CO
+      <HeaderTitle>
+        <a href="/">E-CO</a>
         <BsGithub />
       </HeaderTitle>
       {isAuth ? (
@@ -88,7 +84,8 @@ function Header() {
 export default Header;
 
 const HeaderContainer = styled.div`
-  position: fixed;
+  /* position: fixed; */
+  width: 100%;
   top: 0;
   left: 0;
   right: 0;
@@ -113,21 +110,11 @@ const HeaderTitle = styled.h1`
   &:hover {
     color: #b4f2fc;
   }
-`;
 
-const ImageTest = styled.img`
-  object-fit: contain;
-  border: 1px solid black;
+  & > a {
+    color: white;
+  }
 `;
-// const HeaderCont = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   width: 100%;
-
-//   background-color: blue;
-//   height: 100px;
-// `;
 
 const ButtonCont = styled.div`
   display: flex;

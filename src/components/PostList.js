@@ -80,12 +80,6 @@ const PostListContainer = styled.div`
 `;
 
 const LanguageList = styled.div`
-  margin-top: 100px;
-  padding: 10px;
   display: flex;
   justify-content: space-between;
-
-  &:hover {
-    cursor: pointer;
-  }
 `;
