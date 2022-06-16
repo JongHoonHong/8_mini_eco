@@ -4,6 +4,9 @@ const initialState = {
   list: [],
 };
 
+//  토큰 지정
+const token = localStorage.getItem("token");
+
 const LOAD = "post/LOAD";
 const ADD = "post/ADD";
 const UPDATE = "post/UPDATE";
@@ -15,6 +18,7 @@ const DELETECOMMENT = "post/DELETECOMMENT";
 const UPDATECOMMENT = "post/UPDATECOMMENT";
 
 export function loadPost(post_list) {
+  console.log(post_list);
   return { type: LOAD, post_list };
 }
 
@@ -31,6 +35,7 @@ export function deletePost(post_index) {
 }
 
 export function loadOne(post_list) {
+  console.log(post_list);
   return { type: LOADONE, post_list };
 }
 
@@ -52,8 +57,9 @@ export function updateComment(post_id, comment_id, post) {
 
 export const loadPostDB = () => {
   return function (dispatch) {
-    axios.get(`http://3.39.234.211/posts`).then((response) => {
-      dispatch(loadPost(response.data.data));
+    axios.get(`http://3.35.176.127/posts`).then((response) => {
+      console.log(response.data);
+      dispatch(loadPost(response.data.result));
     });
   };
 };
@@ -75,18 +81,17 @@ export const addPostDB = (post) => {
     for (var value of formData.values()) {
       console.log(value);
     }
+    console.log(token);
 
     formData.append("requestDto", blob, {
       type: "application/json",
     });
     formData.append("multipartFile", post.fileUrl);
     axios
-      .post("http://3.39.234.211/posts/add", formData, {
+      .post("http://3.35.176.127/posts/add", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization:
-            // "BEARER eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJFWFBJUkVEX0RBVEUiOjE2NTU0NTc2NTAsImlzcyI6InNwYXJ0YSIsIlVTRVJfTkFNRSI6ImdsdGx2bDEqoaks.jx2GEKjZFNqAbuNBuL65xl2Vw7HDpe0oFq9vn8-hSOg",
-            "BEARER eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJFWFBJUkVEX0RBVEUiOjE2NTU1Mjk0MTcsImlzcyI6InNwYXJ0YSIsIlVTRVJfTkFNRSI6ImdsdGx2bDEyMyJ9.xWZeufX0aEwn8-9WY-DxdnPwFMNWGCLNVbjHF-NAsWA",
+          Authorization: `${token}`,
         },
       })
       .then((response) => {
@@ -102,7 +107,11 @@ export const addPostDB = (post) => {
 export const deletePostDB = (post_id, category) => {
   return function (dispatch) {
     axios
-      .delete(`http://3.39.234.211/${category}/${post_id}`, {})
+      .delete(`http://3.35.176.127/posts/${category}/${post_id}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      })
       .then((response) => {
         dispatch(deletePost(post_id));
       })
@@ -114,26 +123,36 @@ export const deletePostDB = (post_id, category) => {
 
 export const updatePostDB = (post_id, newData) => {
   return function (dispatch) {
-    const formData = new FormData();
+    console.log(newData);
+    // const formData = new FormData();
 
-    const updatedInfor = {
-      title: newData.title,
-      category: newData.category,
-      contents: newData.contents,
-    };
+    // const updatedInfor = {
+    //   title: newData.title,
+    //   category: newData.category,
+    //   contents: newData.contents,
+    // };
 
-    const blob = new Blob([
-      JSON.stringify(updatedInfor),
-      { type: "application/json" },
-    ]);
+    // const blob = new Blob([
+    //   JSON.stringify(updatedInfor),
+    //   { type: "application/json" },
+    // ]);
 
-    formData.append("requestDto", blob);
-    formData.append("multiparFile", newData.fileUrl);
+    // formData.append("requestDto", blob);
+    // formData.append("multiparFile", newData.fileUrl);
 
+    // console.log(formData);
+    // console.log(newData.category, post_id);
     axios
-      .put(`http://3.39.234.211/${newData.category}/${post_id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
+      .put(
+        `http://3.35.176.127/posts/${newData.category}/${post_id}`,
+        newData,
+        {
+          headers: {
+            Authorization: `${token}`,
+            // "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then((response) => {
         dispatch(updatePost(post_id, newData));
       })
@@ -144,11 +163,13 @@ export const updatePostDB = (post_id, newData) => {
 };
 
 export const loadOneDB = (post_id, category) => {
+  console.log(post_id, category);
   return function (dispatch) {
     axios
-      .get(`http://3.39.234.211/${category}/${post_id}`, {})
+      .get(`http://3.35.176.127/posts/${category}/${post_id}`, {})
       .then((response) => {
-        dispatch(loadOne(response.data));
+        console.log(response);
+        dispatch(loadOne(response.data.result));
       })
       .catch((error) => {
         console.log("상세페이지 로드 에러");
@@ -157,10 +178,9 @@ export const loadOneDB = (post_id, category) => {
 };
 
 export const loadCategoryDB = (category) => {
-  console.log(category);
   return function (dispatch) {
     axios
-      .get(`http://3.39.234.211/posts/${category}`, {})
+      .get(`http://3.35.176.127/posts/${category}`, {})
       .then((response) => {
         dispatch(loadCategory(response.data));
       })
@@ -171,9 +191,14 @@ export const loadCategoryDB = (category) => {
 };
 
 export const addCommentDB = (post_id, post) => {
+  let data = { contents: post };
   return function (dispatch) {
     axios
-      .get(`http://3.39.234.211/${post_id}/comment`, post)
+      .post(`http://3.35.176.127/posts/${post_id}/comment`, data, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      })
       .then((response) => {
         dispatch(addComment(post));
       });
@@ -183,7 +208,11 @@ export const addCommentDB = (post_id, post) => {
 export const deleteCommentDB = (post_id, comment_id) => {
   return function (dispatch) {
     axios
-      .delete(`http://3.39.234.211/${post_id}/${comment_id}`)
+      .delete(`http://3.35.176.127/posts/${post_id}/${comment_id}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      })
       .then((response) => {
         dispatch(deleteComment(post_id, comment_id));
       })
@@ -196,7 +225,11 @@ export const deleteCommentDB = (post_id, comment_id) => {
 export const updateCommentDB = (post_id, comment_id, post) => {
   return function (dispatch) {
     axios
-      .put(`http://3.39.234.211/${post_id}/${comment_id}`, post)
+      .put(`http://3.35.176.127/posts/${post_id}/${comment_id}`, post, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      })
       .then((response) => {
         dispatch(updateComment(post_id, comment_id));
       })
@@ -209,6 +242,7 @@ export const updateCommentDB = (post_id, comment_id, post) => {
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case "post/LOAD": {
+      console.log(action.post_list);
       return { list: action.post_list };
     }
     case "post/ADD": {
@@ -216,6 +250,7 @@ export default function reducer(state = initialState, action = {}) {
       return { list: new_post_list };
     }
     case "post/UPDATE": {
+      console.log(action);
       const new_post_list = state.list.filter((l, idx) => {
         return parseInt(action.post_index) !== idx;
       });
@@ -229,6 +264,7 @@ export default function reducer(state = initialState, action = {}) {
       return { list: new_post_list };
     }
     case "post/LOADONE": {
+      console.log(action.post_list);
       return { list: action.post_list };
     }
     case "post/LOADCATEGORY": {

@@ -7,6 +7,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Header from "./components/Header";
 import styled from "styled-components";
+import PostList from "./components/PostList";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="postlist" elemet={<PostList />} />
           <Route path="/uploadpost" element={<UploadPost />} />
           <Route path="/postdetail" element={<PostDetail />} />
           <Route path="/login" element={<Login />}></Route>

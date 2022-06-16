@@ -1,22 +1,14 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { addCommentDB } from "../redux/modules/comment";
+import { addCommentDB } from "../redux/modules/post";
 
 function CommentUpload({ postid }) {
   const dispatch = useDispatch();
   const commentText = React.useRef();
 
   const addComments = () => {
-    dispatch(
-      addCommentDB(
-        {
-          username: "username",
-          contents: commentText.current.value,
-        },
-        postid
-      )
-    );
+    dispatch(addCommentDB(postid, commentText.current.value));
   };
 
   return (
