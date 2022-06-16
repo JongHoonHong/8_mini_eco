@@ -7,20 +7,23 @@ import { Link, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { loadPostDB, loadCategoryDB } from "../redux/modules/post";
 
+let map = null;
+
 function PostList() {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.post.list);
-  console.log(posts);
+
   const [language, setLanguage] = useState("");
 
   React.useEffect(() => {
     dispatch(loadPostDB());
   }, []);
 
-  React.useEffect(() => {
-    dispatch(loadCategoryDB(language));
-  }, [language]);
+  // React.useEffect(() => {
+  //   dispatch(loadCategoryDB(language));
+  // }, [language]);
 
+  console.log(posts);
   return (
     <>
       <LanguageList>
@@ -57,6 +60,7 @@ function PostList() {
               category={list.category}
               id={list.id}
               username={list.username}
+              comment={list.comments}
             />
           );
         })}
