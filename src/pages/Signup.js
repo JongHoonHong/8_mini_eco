@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
+
 import { checkId_Reg, checkEmail_Reg, checkPW_Reg } from "../shared/reg";
 // import { registerUser } from "../redux/modules/user";
 
@@ -16,35 +17,18 @@ const Signup = () => {
 
   const [isCheckedId, setCheckedId] = useState(false);
 
-  //추가 + 실시간 유효성 검사(정규표현식)
-  /*서버측 유효성 검사
-    ID : 
-    1. 영문&숫자만 가능
-    2. 3자 이상
-    3. 비밀번호 포함 X
-    4. 중복 X
 
-    PW : 
-    1. 6자 이상
-    2.영문&숫자만 가능
-    3. 비밀번호에 아이디 포함 X
-    4. 비밀번호 일치여부
-
-    realName:
-    1.중복 사용자 X
-
-    Email:
-    1. 영대소문&숫자@영대소문.영대소문(2~6자리 범위지정) 
-    이메일형식으로 입력
-*/
+ 
   console.log(userId);
   let data = { username: userId };
   // 아이디 중복 확인 -> 리덕스로 빼야하나..?
   // 2022 06 15 baseURL변경 : 3.35.176.127
   const checkUniqueId = () => {
+
     if (userId === "" || checkId_Reg(userId) === false) {
       return window.alert("아이디 양식을 지켜주세요 😎");
     }
+
 
     axios
       .post("http://3.35.176.127/user/signup/check", JSON.stringify(data), {
@@ -76,6 +60,7 @@ const Signup = () => {
       window.alert("입력 칸에 정보를 전부 기입해주세요!");
       return;
     }
+
     if (!checkId_Reg(userId)) {
       window.alert("아이디는 3자리 이상, 영문 숫자 조합으로 입력해주세요!");
       return;
@@ -85,6 +70,7 @@ const Signup = () => {
       return;
     }
     if (!checkPW_Reg(password)) {
+
       //비밀번호 길이 확인
       window.alert("비밀번호는 6자리 이상으로 입력해주세요!");
       return;
@@ -96,14 +82,13 @@ const Signup = () => {
       return;
     }
 
-    //✅
+
+
     if (isCheckedId === false) {
       window.alert("아이디 중복은 필수입니다. 😎");
       return;
-    } else {
-      //여기 채워야 함
     }
-    // ✅
+
     let body = {
       username: userId,
       password: password,
@@ -116,13 +101,14 @@ const Signup = () => {
       .post("http://3.35.176.127/user/signup", body)
       .then((res) => {
         window.alert("가입이 완료됐습니다. 로그인 해주세요😎");
+
         navigate("/login");
+
       })
       .catch((err) => {
         console.log(`${err.response.data.message}`);
         window.alert(`${err.response.data.message}`);
       });
-
     // dispatch(
     //   registerUser(body).then((res) => {
     //     if (res.payload.success) {
@@ -133,7 +119,6 @@ const Signup = () => {
     //   })
     // );
   };
-
   return (
     <Container>
       <Contents>
@@ -145,7 +130,9 @@ const Signup = () => {
                 setId(e.target.value);
               }}
               minLength="3"
+
               placeholder="3자리 이상 영문+숫자 조합"
+
             />
             <button
               onClick={() => {
@@ -203,7 +190,6 @@ const Signup = () => {
     </Container>
   );
 };
-
 const Container = styled.div`
   // 부모가 App이고 width가 데스크탑 기준 1000px으로 잡혀있음
   width: 50%;
@@ -212,7 +198,6 @@ const Container = styled.div`
   justify-content: center;
   background-color: #ff9615;
 `;
-
 const Contents = styled.div`
   /* 이전 CSS */
   /* gap: 1rem;
@@ -220,7 +205,6 @@ const Contents = styled.div`
   width: 60%;
   display: flex; */
   /* position: relative; */
-
   gap: 1rem;
   border-radius: 10px;
   align-items: center;
@@ -239,7 +223,6 @@ const Flexcont = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: stretch;
-
   & > button {
     /* padding: 5px 0; */
     background-color: #7ee2eb;
@@ -247,12 +230,10 @@ const Flexcont = styled.div`
     padding: 5px 10px;
     text-align: center;
     border-radius: 5px;
-
     &:hover {
       background-color: #93cdd2;
     }
   }
-
   & > input {
     background-color: #f2f2f2;
     border: 0;
@@ -264,7 +245,6 @@ const Flexcont = styled.div`
 const InputBox = styled.div`
   text-align: left;
   width: 100%;
-
   & > input {
     /* outline: 0; */
     background: #f2f2f2;
@@ -283,10 +263,8 @@ const Btn = styled.button`
   border-radius: 5px;
   color: #242424;
   transition: 0.3s;
-
   &:hover {
     background-color: #93cdd2;
   }
 `;
-
 export default Signup;

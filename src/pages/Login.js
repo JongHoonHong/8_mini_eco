@@ -4,14 +4,16 @@ import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
 import { setToken, setUserId } from "../shared/local_storage";
 import { checkId_Reg, checkPW_Reg } from "../shared/reg";
 
+
 // 서버 username = userID
 let data = {};
-
 const Login = () => {
   const navigate = useNavigate();
+
 
   const [userId, setId] = useState("");
   const [password, setPassword] = useState("");
@@ -20,14 +22,16 @@ const Login = () => {
   const pw_ref = useRef("");
 
   const dispatch = useDispatch();
-
   console.log(userId, password);
 
+
   const handleLogin = async () => {
+
     if (userId === "" || password === "") {
       window.alert("아이디와 비밀번호 모두 입력해주세요.😊");
       return;
     }
+
     if (!checkId_Reg(userId)) {
       return window.alert("아이디는 영어 숫자 조합입니다. 😊");
     }
@@ -38,6 +42,7 @@ const Login = () => {
     // const frm = new FormData();
     // frm.append("username", userId);
     // frm.append("password", password);
+
 
     let userDoc = {
       username: userId,
@@ -50,6 +55,7 @@ const Login = () => {
         console.log(res);
         const TOKEN = res.headers?.authorization;
         const USER_ID = res.headers?.username;
+
         setToken(TOKEN);
         setUserId(USER_ID);
         window.alert("로그인이 성공하였습니다. 😊");
@@ -62,6 +68,7 @@ const Login = () => {
         pw_ref.current.value = "";
       });
   };
+
 
   return (
     <Container>
@@ -91,13 +98,11 @@ const Login = () => {
             ref={pw_ref}
           />
         </InputBox>
-
         <Btn onClick={handleLogin}>로그인</Btn>
       </Contents>
     </Container>
   );
 };
-
 const Container = styled.div`
   // 부모가 App이고 width가 데스크탑 기준 1000px으로 잡혀있음
   width: 50%;
@@ -106,7 +111,6 @@ const Container = styled.div`
   justify-content: center;
   background-color: #ff9615;
 `;
-
 const Contents = styled.div`
   /* 이전 CSS */
   /* gap: 1rem;
@@ -114,7 +118,6 @@ const Contents = styled.div`
   width: 60%;
   display: flex; */
   /* position: relative; */
-
   gap: 1rem;
   border-radius: 10px;
   align-items: center;
@@ -131,7 +134,6 @@ const Contents = styled.div`
 const InputBox = styled.div`
   text-align: left;
   width: 100%;
-
   & > input {
     outline: 0;
     background: #f2f2f2;
@@ -150,7 +152,6 @@ const Btn = styled.button`
   border-radius: 5px;
   color: #242424;
   transition: 0.3s;
-
   &:hover {
     background-color: #93cdd2;
   }

@@ -10,6 +10,10 @@ function Post({ title, text, image, id, category, username }) {
   const data = {
     id: id,
     category: category,
+    title: title,
+    contents: text,
+    imageUrl: image,
+    username: username,
   };
 
   return (
@@ -18,9 +22,9 @@ function Post({ title, text, image, id, category, username }) {
         <PostTitle>{title}</PostTitle>
         <PostContents>{text}</PostContents>
         <p>{username}</p>
-        <PostImage>
-          <img src={image} width="100%" alt="" />
-        </PostImage>
+        <div>
+          <PostImage src={image} />
+        </div>
 
         <p>{id}</p>
       </PostContainer>
@@ -31,11 +35,24 @@ function Post({ title, text, image, id, category, username }) {
 export default Post;
 
 const PostContainer = styled.div`
-  width: 100px;
+  width: 100%;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
   border: 1px solid black;
-  margin: 10px;
+  margin: 40px;
 `;
 const PostTitle = styled.div``;
 const PostContents = styled.div``;
 
-const PostImage = styled.div``;
+const PostImageBox = styled.div`
+  width: 80%;
+  height: 300px;
+  object-fit: cover;
+`;
+const PostImage = styled.img`
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
+`;
