@@ -36,23 +36,24 @@ export default Post;
 
 const PostContainer = styled.div`
   width: 100%;
-  height: 500px;
+  height: 400px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   font-size: 1rem;
   border: 1px solid black;
-  margin: 40px;
 `;
+
 const PostTitle = styled.div``;
 const PostContents = styled.div``;
 
 const PostImageBox = styled.div`
-  width: 80%;
+  width: 90%;
   height: 300px;
   object-fit: cover;
 `;
 const PostImage = styled.img`
-  width: 200px;
+  width: 300px;
   height: 300px;
   object-fit: cover;
 `;

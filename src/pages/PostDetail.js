@@ -2,18 +2,27 @@ import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { loadOneDB, updatePostDB, deletePostDB } from "../redux/modules/post";
+import {
+  loadOneDB,
+  updatePostDB,
+  deletePostDB,
+  deleteCommentDB,
+} from "../redux/modules/post";
 import { useDispatch } from "react-redux";
 import CommentList from "../components/CommentList";
-import { Link } from "react-router-dom";
-import Home from "./Home";
+import { useNavigate } from "react-router-dom";
+import CommentBox from "../components/CommentBox";
 
 // 받아온 id 값이 토큰 값이랑 같지 않다면 수정 버튼 없애기
 
 function PostDetail() {
   const post = useSelector((state) => {
+    console.log("useSelector");
+    console.log(state.post.list);
     return state.post.list;
   });
+  console.log("done useSelector");
+
   console.log(post);
   // const post = useSelector((state) => state.post.list);
   const token = localStorage.getItem("token");
@@ -23,11 +32,13 @@ function PostDetail() {
   const location = useLocation();
   const data = location.state.data;
   const [imageSrc, setImageSrc] = useState("");
-  const [isYou, setIsYou] = useState(false);
+  const [isYou, setIsYou] = useState(true);
 
   const newTitle = useRef();
   const newText = useRef();
   const newImage = useRef();
+
+  const navigate = useNavigate();
 
   //  언어 카테고리
 
@@ -46,8 +57,11 @@ function PostDetail() {
   //  이미지 파일 미리보기 인코딩 부분
 
   React.useEffect(() => {
-    dispatch(loadOneDB(data.id, data.category));
-  }, []);
+    if (post) {
+      dispatch(loadOneDB(data.id, data.category));
+      console.log("메롱");
+    }
+  }, [data]);
 
   const arrayTest = post.comments;
   console.log(arrayTest);
@@ -65,10 +79,10 @@ function PostDetail() {
 
   console.log(post);
 
-  React.useEffect(() => {
-    if (user_id === data.username) setIsYou(true);
-  }, []);
-  console.log(isYou);
+  // React.useEffect(() => {
+  //   if (user_id === data.username) setIsYou(true);
+  // }, []);
+  // console.log(isYou);
 
   const updatePosting = () => {
     // let file = newImage.current.files[0];
@@ -107,37 +121,31 @@ function PostDetail() {
           <input ref={newText} placeholder={post.contents} />
         </PostDetailTitle>
         <PostDetailImage>
-          이미지:
-          <input
-            ref={newImage}
-            placeholder={post.image}
-            type="file"
-            onChange={(e) => {
-              encodeFileToBase64(e.target.files[0]);
-            }}
-          />
-          {/* <img src={post.imgUrl} /> */}
+          <img src={post.imgUrl} />
         </PostDetailImage>
         <div>{imageSrc && <img src={imageSrc} />}</div>
         {isYou === true ? (
-          ((<button onClick={deletePosting}>삭제</button>),
-          (<button onClick={updatePosting}>수정가능</button>))
+          <button onClick={deletePosting}>버튼삭제</button>
         ) : (
+          // (<button onClick={updatePosting}>수정가능</button>))
           <p>본인아님</p>
         )}
-        <Link to="/postlist">
-          <button>이동</button>
-        </Link>
-        {/* <>
-          {arrayTest.map((list, index) => {
-           
-    
-            console.log(list);
 
-            return list;
-          })}
-        </> */}
+        <a href="/">뒤로가기</a>
+
         <CommentList post_id={data.id} />
+        {post.comments
+          ? post.comments.map((l) => {
+              let datas = {
+                postid_: data.id,
+                comment_id: l.id,
+                contents: l.contents,
+                username: l.username,
+              };
+              return <CommentBox datas={datas} />;
+              // <p key={l.id}>{l.contents}</p>;
+            })
+          : null}
       </PostDetailContainer>
     </>
   );

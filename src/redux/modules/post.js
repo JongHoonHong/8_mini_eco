@@ -206,9 +206,10 @@ export const addCommentDB = (post_id, post) => {
 };
 
 export const deleteCommentDB = (post_id, comment_id) => {
+  console.log(post_id, comment_id);
   return function (dispatch) {
     axios
-      .delete(`http://3.35.176.127/posts/${post_id}/${comment_id}`, {
+      .delete(`http://3.35.176.127/posts/${post_id}/comments/${comment_id}`, {
         headers: {
           Authorization: `${token}`,
         },
@@ -223,13 +224,18 @@ export const deleteCommentDB = (post_id, comment_id) => {
 };
 
 export const updateCommentDB = (post_id, comment_id, post) => {
+  console.log(post_id, comment_id, post);
   return function (dispatch) {
     axios
-      .put(`http://3.35.176.127/posts/${post_id}/${comment_id}`, post, {
-        headers: {
-          Authorization: `${token}`,
-        },
-      })
+      .put(
+        `http://3.35.176.127/posts/${post_id}/comments/${comment_id}`,
+        post,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      )
       .then((response) => {
         dispatch(updateComment(post_id, comment_id));
       })

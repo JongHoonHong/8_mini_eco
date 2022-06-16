@@ -16,7 +16,7 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="postlist" elemet={<PostList />} />
+          <Route path="/postlist" element={<PostList />} />
           <Route path="/uploadpost" element={<UploadPost />} />
           <Route path="/postdetail" element={<PostDetail />} />
           <Route path="/login" element={<Login />}></Route>
