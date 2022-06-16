@@ -27,8 +27,7 @@ function Comment({ username, contents, id, postid }) {
       ) : (
         <UserComment>{contents}</UserComment>
       )}
-      <UpdateBtn onClick={updateComments}>수정버튼</UpdateBtn>
-      <DeleteBtn onClick={deleteComments}>삭제버튼</DeleteBtn>
+      <Div></Div>
     </CommentContainer>
   );
 }
@@ -38,5 +37,21 @@ export default Comment;
 const CommentContainer = styled.div``;
 const UserNickName = styled.div``;
 const UserComment = styled.div``;
-const UpdateBtn = styled.button``;
-const DeleteBtn = styled.button``;
+
+const Btn = styled.button`
+  padding: 10px 0;
+  background-color: #7ee2eb;
+  width: 30%;
+  border-radius: 5px;
+  color: #242424;
+  transition: 0.3s;
+  &:hover {
+    background-color: #93cdd2;
+  }
+`;
+
+const Div = styled.div`
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
+`;

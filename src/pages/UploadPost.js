@@ -51,6 +51,7 @@ function UploadPost() {
         fileUrl: file,
       })
     );
+    window.location.href("/");
   };
 
   return (

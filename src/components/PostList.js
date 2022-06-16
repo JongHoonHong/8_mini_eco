@@ -16,12 +16,9 @@ function PostList() {
   const [language, setLanguage] = useState("");
 
   React.useEffect(() => {
-    dispatch(loadPostDB());
-  }, []);
-
-  // React.useEffect(() => {
-  //   dispatch(loadCategoryDB(language));
-  // }, [language]);
+    if (language === "") dispatch(loadPostDB());
+    else dispatch(loadCategoryDB(language));
+  }, [language]);
 
   console.log(posts);
   return (
@@ -77,4 +74,7 @@ const PostListContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const LanguageList = styled.div``;
+const LanguageList = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;

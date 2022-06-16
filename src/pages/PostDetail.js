@@ -1,12 +1,14 @@
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { loadOneDB, updatePostDB, deletePostDB } from "../redux/modules/post";
 import { useDispatch } from "react-redux";
 import CommentList from "../components/CommentList";
+import CommentBox from "../components/CommentBox";
 import { Link } from "react-router-dom";
 import Home from "./Home";
+import { useNavigate } from "react-router-dom";
 
 // 받아온 id 값이 토큰 값이랑 같지 않다면 수정 버튼 없애기
 
@@ -21,6 +23,7 @@ function PostDetail() {
   console.log(post.commnets);
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const data = location.state.data;
   const [imageSrc, setImageSrc] = useState("");
   const [isYou, setIsYou] = useState(false);
@@ -46,8 +49,11 @@ function PostDetail() {
   //  이미지 파일 미리보기 인코딩 부분
 
   React.useEffect(() => {
-    dispatch(loadOneDB(data.id, data.category));
-  }, []);
+    if (post) {
+      dispatch(loadOneDB(data.id, data.category));
+      if (user_id === data.username) setIsYou(true);
+    }
+  }, [data]);
 
   const arrayTest = post.comments;
   console.log(arrayTest);
@@ -63,12 +69,7 @@ function PostDetail() {
     });
   };
 
-  console.log(post);
-
-  React.useEffect(() => {
-    if (user_id === data.username) setIsYou(true);
-  }, []);
-  console.log(isYou);
+  //console.log(post);
 
   const updatePosting = () => {
     // let file = newImage.current.files[0];
@@ -81,6 +82,7 @@ function PostDetail() {
         // fileUrl: file,
       })
     );
+    window.location.reload();
   };
 
   const deletePosting = () => {
@@ -90,54 +92,61 @@ function PostDetail() {
   return (
     <>
       <PostDetailContainer>
-        <label>
-          언어 선택
-          <select value={value} onChange={handleChange}>
-            {options.map((option) => (
-              <option value={option.value}>{option.label}</option>
-            ))}
-          </select>
-        </label>
-        <PostDetailTitle>
-          주제:
-          <input ref={newTitle} placeholder={post.title} />
-        </PostDetailTitle>
-        <PostDetailTitle>
-          내용:
-          <input ref={newText} placeholder={post.contents} />
-        </PostDetailTitle>
-        <PostDetailImage>
-          이미지:
-          <input
-            ref={newImage}
-            placeholder={post.image}
-            type="file"
-            onChange={(e) => {
-              encodeFileToBase64(e.target.files[0]);
-            }}
-          />
-          {/* <img src={post.imgUrl} /> */}
-        </PostDetailImage>
-        <div>{imageSrc && <img src={imageSrc} />}</div>
+        <Div>
+          <label>
+            언어 선택
+            <select value={value} onChange={handleChange}>
+              {options.map((option) => (
+                <option value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </label>
+        </Div>
+        <Div>
+          <PostDetailTitle>
+            주제:
+            <input ref={newTitle} placeholder={post.title} />
+          </PostDetailTitle>
+        </Div>
+        <Div>
+          <PostDetailTitle>
+            내용:
+            <input ref={newText} placeholder={post.contents} />
+          </PostDetailTitle>
+        </Div>
+        <Div>
+          <PostDetailImage>
+            <img src={post.imgUrl} />
+          </PostDetailImage>
+        </Div>
+        <Div>{imageSrc && <img src={imageSrc} />}</Div>
         {isYou === true ? (
-          ((<button onClick={deletePosting}>삭제</button>),
-          (<button onClick={updatePosting}>수정가능</button>))
+          <Div>
+            <Btn onClick={deletePosting}>버튼삭제</Btn>
+            <Btn onClick={updatePosting}>수정가능</Btn>
+          </Div>
         ) : (
-          <p>본인아님</p>
+          //게시물 작성인 아님
+          <p></p>
         )}
-        <Link to="/postlist">
-          <button>이동</button>
-        </Link>
-        {/* <>
-          {arrayTest.map((list, index) => {
-           
-    
-            console.log(list);
-
-            return list;
-          })}
-        </> */}
-        <CommentList post_id={data.id} />
+        <Div>
+          <a href="/">뒤로가기</a>
+        </Div>
+        <Div>
+          <CommentList post_id={data.id} />
+        </Div>
+        {post.comments
+          ? post.comments.map((l) => {
+              let datas = {
+                postid_: data.id,
+                comment_id: l.id,
+                contents: l.contents,
+                username: l.username,
+              };
+              return <CommentBox datas={datas} />;
+              // <p key={l.id}>{l.contents}</p>;
+            })
+          : null}
       </PostDetailContainer>
     </>
   );
@@ -146,11 +155,31 @@ function PostDetail() {
 export default PostDetail;
 
 const PostDetailContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 const PostDetailTitle = styled.div`
   width: 200px;
 `;
 
 const PostDetailImage = styled.div``;
+
+const Div = styled.div`
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Btn = styled.button`
+  padding: 5px 0;
+  background-color: #7ee2eb;
+  width: 30%;
+  border-radius: 5px;
+  color: #242424;
+  transition: 0.3s;
+  &:hover {
+    background-color: #93cdd2;
+  }
+`;
