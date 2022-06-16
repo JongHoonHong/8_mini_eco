@@ -1,45 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import axios from "axios";
+
+import { checkId_Reg, checkEmail_Reg, checkPW_Reg } from "../shared/reg";
 // import { registerUser } from "../redux/modules/user";
+
 const Signup = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [userId, setId] = useState(null);
-  const [realName, setRealname] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [passwordCHK, setPasswordCHK] = useState(null);
+
+  const [userId, setId] = useState("");
+  const [realName, setRealname] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [passwordCHK, setPasswordCHK] = useState("");
+
   const [isCheckedId, setCheckedId] = useState(false);
-  //추가 + 실시간 유효성 검사(정규표현식)
-  /*서버측 유효성 검사
-    ID : 
-    1. 영문&숫자만 가능
-    2. 3자 이상
-    3. 비밀번호 포함 X
-    4. 중복 X
-​
-    PW : 
-    1. 6자 이상
-    2.영문&숫자만 가능
-    3. 비밀번호에 아이디 포함 X
-    4. 비밀번호 일치여부
-​
-    realName:
-    1.중복 사용자 X
-​
-    Email:
-    1. 영대소문&숫자@영대소문.영대소문(2~6자리 범위지정) 
-    이메일형식으로 입력
-*/
+
+
+ 
   console.log(userId);
   let data = { username: userId };
   // 아이디 중복 확인 -> 리덕스로 빼야하나..?
   // 2022 06 15 baseURL변경 : 3.35.176.127
   const checkUniqueId = () => {
-    // if (userId < 3)
+
+    if (userId === "" || checkId_Reg(userId) === false) {
+      return window.alert("아이디 양식을 지켜주세요 😎");
+    }
+
+
     axios
       .post("http://3.35.176.127/user/signup/check", JSON.stringify(data), {
         headers: {
@@ -70,13 +60,17 @@ const Signup = () => {
       window.alert("입력 칸에 정보를 전부 기입해주세요!");
       return;
     }
-    if (userId < 3) {
+
+    if (!checkId_Reg(userId)) {
       window.alert("아이디는 3자리 이상, 영문 숫자 조합으로 입력해주세요!");
       return;
     }
-    // if (email) {
-    // }
-    if (password < 6 || passwordCHK < 6) {
+    if (!checkEmail_Reg(email)) {
+      window.alert("이메일 형식을 맞춰주세요!");
+      return;
+    }
+    if (!checkPW_Reg(password)) {
+
       //비밀번호 길이 확인
       window.alert("비밀번호는 6자리 이상으로 입력해주세요!");
       return;
@@ -87,11 +81,14 @@ const Signup = () => {
       setPasswordCHK("");
       return;
     }
-    // if (isCheckedId === false) {
-    //   window.alert("아이디 중복은 필수입니다. 😎");
-    //   return;
-    // } else {
-    // }
+
+
+
+    if (isCheckedId === false) {
+      window.alert("아이디 중복은 필수입니다. 😎");
+      return;
+    }
+
     let body = {
       username: userId,
       password: password,
@@ -104,7 +101,9 @@ const Signup = () => {
       .post("http://3.35.176.127/user/signup", body)
       .then((res) => {
         window.alert("가입이 완료됐습니다. 로그인 해주세요😎");
-        navigate("/");
+
+        navigate("/login");
+
       })
       .catch((err) => {
         console.log(`${err.response.data.message}`);
@@ -131,7 +130,9 @@ const Signup = () => {
                 setId(e.target.value);
               }}
               minLength="3"
-              placeholder="예시 - gamza112"
+
+              placeholder="3자리 이상 영문+숫자 조합"
+
             />
             <button
               onClick={() => {
@@ -149,7 +150,7 @@ const Signup = () => {
               setRealname(e.target.value);
             }}
             required
-            placeholder="예시 - 김말자"
+            placeholder=""
           />
         </InputBox>
         <InputBox>

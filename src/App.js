@@ -29,11 +29,13 @@ function App() {
 
 const Container = styled.div`
   /* display: flex; */
-  width: 1000px;
-  /* flex-direction: column;
+  width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  align-items: center; */
   font-size: calc(10px + 2vmin);
   background-color: aliceblue;
 `;
+
 export default App;
