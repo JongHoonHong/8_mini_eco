@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import CommentUpload from "./CommentUpload";
+import comment from "/Users/jh/Desktop/8_mini_eco/src/redux/modules/comment.js";
 import Comment from "./Comment";
 
 function CommentList({ post_id, comment }) {
-  const comments = useSelector((state) => state.comment.list);
+  const comments = useSelector((state) => state.post.list);
   console.log(comments);
   const dispatch = useDispatch();
   //  map Comment 호출
@@ -18,7 +19,7 @@ function CommentList({ post_id, comment }) {
     <CommentListContainer>
       <CommentUpload postid={post_id} />
 
-      {comments.map((list, index) => {
+      {/* {comments.map((list, index) => {
         return (
           <Comment
             key={index}
@@ -26,7 +27,7 @@ function CommentList({ post_id, comment }) {
             contents={list.comment}
           />
         );
-      })}
+      })} */}
       <Comment />
     </CommentListContainer>
   );

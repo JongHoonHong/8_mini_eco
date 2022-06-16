@@ -79,7 +79,15 @@ function PostDetail() {
     });
   };
 
+<<<<<<< HEAD
+  console.log(post);
+
+  // if (user_id === data.username) setIsYou(true);
+
+  console.log(isYou);
+=======
   //console.log(post);
+>>>>>>> f93b4e7412e84da9371cf2e89166d7dd7e711a1a
 
   const updatePosting = () => {
     // let file = newImage.current.files[0];
@@ -131,6 +139,11 @@ function PostDetail() {
         </Div>
         <Div>{imageSrc && <img src={imageSrc} />}</Div>
         {isYou === true ? (
+<<<<<<< HEAD
+          (<button onClick={deletePosting}>버튼삭제</button>)()
+        ) : (
+          <p>본인아님</p>
+=======
           <Div>
             <Btn onClick={deletePosting}>버튼삭제</Btn>
             <Btn onClick={updatePosting}>수정가능</Btn>
@@ -138,6 +151,7 @@ function PostDetail() {
         ) : (
           //게시물 작성인 아님
           <p></p>
+>>>>>>> f93b4e7412e84da9371cf2e89166d7dd7e711a1a
         )}
         <Div>
           <a href="/">뒤로가기</a>

@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
-
 import { useState } from "react";
 import Post from "./Post";
 import { Link, Navigate } from "react-router-dom";
@@ -32,6 +31,7 @@ function PostList() {
         </button>
         <button
           onClick={() => {
+            console.log("react");
             setLanguage("React");
           }}
         >

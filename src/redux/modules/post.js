@@ -162,10 +162,15 @@ export const loadOneDB = (post_id, category) => {
 };
 
 export const loadCategoryDB = (category) => {
+  console.log(category);
   return function (dispatch) {
     axios
       .get(`http://3.35.176.127/posts/${category}`, {})
       .then((response) => {
+<<<<<<< HEAD
+        console.log(response);
+=======
+>>>>>>> f93b4e7412e84da9371cf2e89166d7dd7e711a1a
         dispatch(loadCategory(response.data.result));
       })
       .catch((error) => {
