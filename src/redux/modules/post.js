@@ -114,6 +114,7 @@ export const deletePostDB = (post_id, category) => {
       })
       .then((response) => {
         dispatch(deletePost(post_id));
+        window.location.href("/");
       })
       .catch((error) => {
         console.log("게시물 삭제 에러");
@@ -124,24 +125,7 @@ export const deletePostDB = (post_id, category) => {
 export const updatePostDB = (post_id, newData) => {
   return function (dispatch) {
     console.log(newData);
-    // const formData = new FormData();
 
-    // const updatedInfor = {
-    //   title: newData.title,
-    //   category: newData.category,
-    //   contents: newData.contents,
-    // };
-
-    // const blob = new Blob([
-    //   JSON.stringify(updatedInfor),
-    //   { type: "application/json" },
-    // ]);
-
-    // formData.append("requestDto", blob);
-    // formData.append("multiparFile", newData.fileUrl);
-
-    // console.log(formData);
-    // console.log(newData.category, post_id);
     axios
       .put(
         `http://3.35.176.127/posts/${newData.category}/${post_id}`,
@@ -182,7 +166,7 @@ export const loadCategoryDB = (category) => {
     axios
       .get(`http://3.35.176.127/posts/${category}`, {})
       .then((response) => {
-        dispatch(loadCategory(response.data));
+        dispatch(loadCategory(response.data.result));
       })
       .catch((error) => {
         console.log("카테고리별 게시물 리스트 로드 에러");

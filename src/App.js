@@ -11,7 +11,7 @@ import PostList from "./components/PostList";
 
 function App() {
   return (
-    <div className="App">
+    <AppCont className="App">
       <Container>
         <Header />
         <Routes>
@@ -23,19 +23,21 @@ function App() {
           <Route path="/signup" element={<Signup />}></Route>
         </Routes>
       </Container>
-    </div>
+    </AppCont>
   );
 }
 
-const Container = styled.div`
-  /* display: flex; */
+const AppCont = styled.div`
   width: 1200px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  background-color: aliceblue;
+  /* background-color: aliceblue; */
+`;
+const Container = styled.div`
+  width: 100%;
 `;
 
 export default App;
