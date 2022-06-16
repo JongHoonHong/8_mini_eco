@@ -1,48 +1,72 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import axios from "axios";
-import { registerUser } from "../redux/modules/user";
+import { checkId_Reg, checkEmail_Reg, checkPW_Reg } from "../shared/reg";
+// import { registerUser } from "../redux/modules/user";
 
 const Signup = () => {
-  //인풋-> 아이디(고유값), 이름,이메일, 패스워드, 패스워드(중복체크용)
-  // const id_ref = React.useRef(null);
-  // const name_ref = React.useRef(null);
-  // const email_ref = React.useRef(null);
-  // const pw_ref = React.useRef(null);
-  // const pw_check_ref = React.useRef(null);
-
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  const [userId, setId] = useState(null);
-  const [realName, setRealname] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [passwordCHK, setPasswordCHK] = useState(null);
+  const [userId, setId] = useState("");
+  const [realName, setRealname] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [passwordCHK, setPasswordCHK] = useState("");
 
-  console.log(typeof userId, typeof password);
+  const [isCheckedId, setCheckedId] = useState(false);
+
   //추가 + 실시간 유효성 검사(정규표현식)
-  // React.useEffect(() => {
-  //   handleSubmit();
-  // }, []);
+  /*서버측 유효성 검사
+    ID : 
+    1. 영문&숫자만 가능
+    2. 3자 이상
+    3. 비밀번호 포함 X
+    4. 중복 X
 
+    PW : 
+    1. 6자 이상
+    2.영문&숫자만 가능
+    3. 비밀번호에 아이디 포함 X
+    4. 비밀번호 일치여부
+
+    realName:
+    1.중복 사용자 X
+
+    Email:
+    1. 영대소문&숫자@영대소문.영대소문(2~6자리 범위지정) 
+    이메일형식으로 입력
+*/
+  console.log(userId);
   let data = { username: userId };
+  // 아이디 중복 확인 -> 리덕스로 빼야하나..?
+  // 2022 06 15 baseURL변경 : 3.35.176.127
   const checkUniqueId = () => {
+    if (userId === "" || checkId_Reg(userId) === false) {
+      return window.alert("아이디 양식을 지켜주세요 😎");
+    }
+
     axios
-      .post("http://3.39.234.211/user/signup/check", JSON.stringify(data), {
+      .post("http://3.35.176.127/user/signup/check", JSON.stringify(data), {
         headers: {
           "Content-Type": "application/json",
         },
       })
-      .then((response) => console.log(typeof response))
-      .catch((err) => console.log(err));
+      .then((response) => {
+        console.log(response.data.status);
+        window.alert("사용 가능한 아이디 입니다 😎");
+      })
+      .catch((error) => {
+        console.log(error.response.data.message);
+        //만약 에러 메세지가 중복
+        window.alert(`${error.response.data.message}`);
+        setId("");
+      });
   };
   const handleSubmit = () => {
-    // e.preventDefault();
-
+    //입력값 유효한 지 확인
     if (
+      userId === "" ||
       password === "" ||
       passwordCHK === "" ||
       realName === "" ||
@@ -52,27 +76,51 @@ const Signup = () => {
       window.alert("입력 칸에 정보를 전부 기입해주세요!");
       return;
     }
-
+    if (!checkId_Reg(userId)) {
+      window.alert("아이디는 3자리 이상, 영문 숫자 조합으로 입력해주세요!");
+      return;
+    }
+    if (!checkEmail_Reg(email)) {
+      window.alert("이메일 형식을 맞춰주세요!");
+      return;
+    }
+    if (!checkPW_Reg(password)) {
+      //비밀번호 길이 확인
+      window.alert("비밀번호는 6자리 이상으로 입력해주세요!");
+      return;
+    }
+    //비밀번호 일치 확인
     if (password !== passwordCHK) {
-      return window.alert("입력한 비밀번호가 다릅니다!");
+      window.alert("입력한 비밀번호가 다릅니다!");
+      setPasswordCHK("");
+      return;
     }
 
+    //✅
+    if (isCheckedId === false) {
+      window.alert("아이디 중복은 필수입니다. 😎");
+      return;
+    } else {
+      //여기 채워야 함
+    }
+    // ✅
     let body = {
       username: userId,
       password: password,
       email: email,
       realName: realName,
+      passwordCheck: passwordCHK,
     };
     //http://3.39.234.211/user/signup
     axios
-      .post("http://3.39.234.211/user/signup", body)
+      .post("http://3.35.176.127/user/signup", body)
       .then((res) => {
-        console.log(res);
         window.alert("가입이 완료됐습니다. 로그인 해주세요😎");
+        navigate("/login");
       })
       .catch((err) => {
-        console.log(err);
-        window.alert("가입이 실패하였습니다.");
+        console.log(`${err.response.data.message}`);
+        window.alert(`${err.response.data.message}`);
       });
 
     // dispatch(
@@ -96,10 +144,16 @@ const Signup = () => {
               onChange={(e) => {
                 setId(e.target.value);
               }}
-              required
-              placeholder="예시 - gamza112"
+              minLength="3"
+              placeholder="3자리 이상 영문+숫자 조합"
             />
-            <button onClick={checkUniqueId}>중복확인</button>
+            <button
+              onClick={() => {
+                checkUniqueId();
+              }}
+            >
+              중복확인
+            </button>
           </Flexcont>
         </InputBox>
         <InputBox>
@@ -109,7 +163,7 @@ const Signup = () => {
               setRealname(e.target.value);
             }}
             required
-            placeholder="예시 - 김말자"
+            placeholder=""
           />
         </InputBox>
         <InputBox>
@@ -130,7 +184,7 @@ const Signup = () => {
             }}
             type="password"
             required
-            placeholder="비밀번호 8자리 이상"
+            placeholder="6자리 이상 영문+숫자 조합"
           />
         </InputBox>
         <InputBox>
@@ -141,6 +195,7 @@ const Signup = () => {
             }}
             type="password"
             required
+            placeholder="비밀번호 재확인"
           />
         </InputBox>
         <Btn onClick={handleSubmit}>회원가입</Btn>

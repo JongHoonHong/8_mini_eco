@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 //비밀번호 로그인 처리, 기본적으로 우리가 만든 auth도 가져와야 함, getAuth를 firebase.js에서 auth로 내보내고 있음
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { setToken, setUserId } from "../shared/local_storage";
+import { checkId_Reg, checkPW_Reg } from "../shared/reg";
 
 // 서버 username = userID
 let data = {};
@@ -11,71 +13,69 @@ let data = {};
 const Login = () => {
   const navigate = useNavigate();
 
-  const [userId, setId] = useState("아이디");
-  const [password, setPassword] = useState("패스워드");
+  const [userId, setId] = useState("");
+  const [password, setPassword] = useState("");
+
+  const id_ref = useRef("");
+  const pw_ref = useRef("");
+
   const dispatch = useDispatch();
 
   console.log(userId, password);
 
-  const handleLogin = () => {
-    // e.preventDefault();
+  const handleLogin = async () => {
     if (userId === "" || password === "") {
       window.alert("아이디와 비밀번호 모두 입력해주세요.😊");
       return;
     }
+    if (!checkId_Reg(userId)) {
+      return window.alert("아이디는 영어 숫자 조합입니다. 😊");
+    }
+    if (!checkPW_Reg(password)) {
+      return window.alert("비밀번호는 6자리 이상입니다.😊");
+    }
 
-    const frm = new FormData();
-    frm.append("username", userId);
-    frm.append("password", password);
+    // const frm = new FormData();
+    // frm.append("username", userId);
+    // frm.append("password", password);
 
     let userDoc = {
       username: userId,
       password: password,
     };
 
-    axios
-      .post("http://3.39.234.211/user/login", userDoc, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+    await axios
+      .post("http://3.35.176.127/user/login", userDoc)
       .then((res) => {
         console.log(res);
-        console.log(res.headers.authorization);
-        localStorage.setItem("token", res.headers.authorization);
+        const TOKEN = res.headers?.authorization;
+        const USER_ID = res.headers?.username;
+        setToken(TOKEN);
+        setUserId(USER_ID);
+        window.alert("로그인이 성공하였습니다. 😊");
+        navigate("/");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        window.alert("아이디 혹은 비밀번호가 틀립니다.😞");
+        id_ref.current.value = "";
+        pw_ref.current.value = "";
+      });
   };
-
-  // const loginDB = () => {
-  //   let userDoc = {
-  //     username: id_ref.current.value,
-  //     password: pw_ref.current.value,
-  //   };
-  //   axios.post("", userDoc).then((res) => {
-  //     console.log(res);
-  //     // console.log(res.headers.authorization);
-  //     // localStorage.setItem("access_token", res.headers.authorization);
-  //   });
-  // };
-  // const TOKEN = localStorage.getItem("access_token");
-
-  // React.useEffect(() => {
-  //   handleLogin();
-  // }, []);
 
   return (
     <Container>
       <Contents>
         <InputBox>
-          <label>아이디(이메일) : </label>
+          <label>아이디 : </label>
           <input
             type="text"
             required
-            placeholder="example@email.com"
+            placeholder="아이디를 입력해주세요."
             onChange={(e) => {
               setId(e.target.value);
             }}
+            ref={id_ref}
           />
         </InputBox>
         <InputBox>
@@ -85,9 +85,10 @@ const Login = () => {
               setPassword(e.target.value);
             }}
             type="password"
+            placeholder="비밀번호를 입력해주세요."
             required
             minLength="8"
-            // ref={pw_ref}
+            ref={pw_ref}
           />
         </InputBox>
 
