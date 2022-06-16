@@ -7,11 +7,10 @@ import { Link, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { loadPostDB, loadCategoryDB } from "../redux/modules/post";
 
-let map = null;
-
 function PostList() {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.post.list);
+  console.log(posts);
 
   const [language, setLanguage] = useState("");
 
@@ -50,20 +49,23 @@ function PostList() {
         </button>
       </LanguageList>
       <PostListContainer>
-        {posts.map((list, index) => {
-          return (
-            <Post
-              key={index}
-              title={list.title}
-              image={list.fileUrl}
-              text={list.contents}
-              category={list.category}
-              id={list.id}
-              username={list.username}
-              comment={list.comments}
-            />
-          );
-        })}
+        {console.log(posts)}
+        {posts
+          ? posts.map((l) => {
+              return (
+                <Post
+                  key={l.id}
+                  title={l.title}
+                  image={l.fileUrl}
+                  text={l.contents}
+                  category={l.category}
+                  id={l.id}
+                  username={l.username}
+                  comment={l.comments}
+                />
+              );
+            })
+          : null}
       </PostListContainer>
     </>
   );
@@ -71,10 +73,21 @@ function PostList() {
 export default PostList;
 
 const PostListContainer = styled.div`
+  padding-top: 20px;
   width: 100%;
   border: 1px solid black;
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
+  background-color: green;
 `;
 
-const LanguageList = styled.div``;
+const LanguageList = styled.div`
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
